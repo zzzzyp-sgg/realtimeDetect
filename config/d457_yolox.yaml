@@ -1,0 +1,9 @@
+YAML: 1.0
+
+# yolox model
+input_model:      "/home/aidlux/catkin_ws/src/realtime_detection/data/yolox_nano_ti_lite_float32.tflite"
+label_path:       "/home/aidlux/catkin_ws/src/realtime_detection/data/labels.txt"
+quantify:         0
+resolution:       416
+score_threshold:  0.35
+nms_threshold:    0.70

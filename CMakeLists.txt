@@ -2,7 +2,11 @@ cmake_minimum_required(VERSION 3.0.2)
 project(realtime_detection)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+set(DEFAULT_BUILD_TYPE "Release")
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_FLAGS "-w")
+set(CMAKE_CXX_FLAGS_RELEASE "-O2 -g -ggdb ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS_DEBUG "-g ${CMAKE_CXX_FLAGS}")
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -11,7 +15,25 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  cv_bridge
+  image_transport
 )
+
+# opencv
+find_package(OpenCV REQUIRED
+             PATHS /usr/local/lib/aidlux_opencv/lib/cmake/opencv4
+             NO_DEFAULT_PATH)
+include_directories(${OpenCV_INCLUDE_DIRS})
+
+# yaml-cpp
+find_package(yaml-cpp REQUIRED)
+include_directories(${yaml-cpp_INCLUDE_DIRS})
+
+file(GLOB_RECURSE OLD_OPENCV "/usr/lib/aarch64-linux-gnu/libopencv*")
+list(REMOVE_ITEM catkin_LIBRARIES ${OLD_OPENCV})
+
+# aidlite
+set(AidSDKLib "/usr/local/lib/libaidlite.so")
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -116,14 +138,17 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  include
   ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/realtime_detection.cpp
-# )
+add_library(yoloxLib
+  src/yolox.cpp
+  src/visualization.cpp
+)
+
+target_link_libraries(yoloxLib ${AidSDKLib} ${OpenCV_LIBS})
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -133,7 +158,8 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/realtime_detection_node.cpp)
+add_executable(d457test_node d457testNode.cpp)
+target_link_libraries(d457test_node yoloxLib ${catkin_LIBRARIES} ${yaml-cpp_LIBRARIES} yaml-cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
