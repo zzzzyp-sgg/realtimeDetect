@@ -20,16 +20,16 @@ Camera:        [Realsense D457(rgb)](https://www.intelrealsense.com/depth-camera
 You can install librealsense and realsense according to the steps in [realsense-ros](https://github.com/IntelRealSense/realsense-ros.git).
 
 ### Realtime Detection
-''' bash
-git clone https://github.com/zzzzyp-sgg/realtime_detection.git
-mkdir build && cd build
-cmake ..
-make -j4
+''' bash  
+git clone https://github.com/zzzzyp-sgg/realtime_detection.git  
+mkdir build && cd build  
+cmake ..  
+make -j4  
 '''
 
 ## Usage Instructions  
 After launch realsense camera, you can start the detection node in ROS:  
-''' bash
+''' bash  
 # rember to source devel/setup.bash
 rosrun realtime_detection d457test_node [config_file]
 '''
